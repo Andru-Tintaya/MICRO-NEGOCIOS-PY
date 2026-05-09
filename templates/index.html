@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}MiZona - Marketplace Local{% endblock %}
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Encuentra el <strong>mejor talento</strong> de tu ciudad</h1>
+        <p>Conectamos emprendedores locales con clientes que valoran calidad y confianza.</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Busca panadería, carpintería, mecánico...">
+            <button onclick="searchStores()"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        <div style="margin-top: 2rem; font-size: 1.1rem;">
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+            {{ stores|length if stores else 0 }} negocios activos
+        </div>
+    </div>
+</section>
+
+<!-- NEGOCIOS -->
+<section class="section" style="background: var(--bg-main);">
+    <div class="container">
+        <h2 class="section-title">Negocios Populares</h2>
+        <div class="business-grid" id="businessGrid">
+            {% if stores %}
+                {% for store in stores %}
+                <div class="business-card">
+                    <a href="{{ url_for('tienda', store_id=store.id) }}">
+                        <div class="store-placeholder">
+                            <i class="fas fa-store"></i>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <h3>{{ store.name }}</h3>
+                        <p>{{ store.description or 'Negocio local verificado' }}</p>
+                        <div class="card-footer">
+                            <span class="location">📍 {{ store.city }}</span>
+                            <a href="{{ url_for('tienda', store_id=store.id) }}" class="btn-view">
+                                Ver Productos <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="loading" style="grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando negocios...</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
