@@ -5,34 +5,50 @@ document.addEventListener('DOMContentLoaded', function() {
     initDashboard();
     setupModals();
 });
-
+///////////////////////////////////////////////////////////////////////////////////////////
 // === BUSCADOR GLOBAL ===
 function initSearch() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
+        // Ejecuta la búsqueda al presionar "Enter"
         searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchStores();
+            if (e.key === 'Enter') {
+                searchStores();
+            }
         });
+        
+        // ¡SUPER MEJORA!: Busca automáticamente en tiempo real mientras el usuario escribe
+        searchInput.addEventListener('input', searchStores);
     }
 }
 
 function searchStores() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+
+    const query = searchInput.value.toLowerCase().trim();
     const grid = document.getElementById('businessGrid');
-    const stores = Array.from(grid.children);
+    if (!grid) return;
+
+    // Capturamos únicamente las tarjetas de negocio reales (.business-card)
+    const stores = Array.from(grid.getElementsByClassName('business-card'));
     
     stores.forEach(store => {
+        // Extraemos los textos de la tarjeta de forma segura
         const name = store.querySelector('h3')?.textContent.toLowerCase() || '';
-        const city = store.querySelector('.location')?.textContent.toLowerCase() || '';
+        const locationText = store.querySelector('.location')?.textContent.toLowerCase() || '';
+        // CORRECCIÓN: Capturamos el párrafo de la descripción (ej: "panadería", "mecánico")
+        const description = store.querySelector('.card-body p')?.textContent.toLowerCase() || ''; 
         
-        if (name.includes(query) || city.includes(query)) {
-            store.style.display = 'block';
+        // Comprobamos si lo que escribió el usuario está en el nombre, la ciudad O la descripción/rubro
+        if (name.includes(query) || locationText.includes(query) || description.includes(query)) {
+            store.style.display = ""; // Muestra la tarjeta respetando tu CSS Grid profesional
         } else {
-            store.style.display = 'none';
+            store.style.display = "none"; // Oculta la tarjeta si no coincide
         }
     });
 }
-
+/////////////////////////////////////////////////////////////////////////////////////
 // === CARRITO GLOBAL ===
 let cart = JSON.parse(localStorage.getItem('mizona_cart')) || [];
 

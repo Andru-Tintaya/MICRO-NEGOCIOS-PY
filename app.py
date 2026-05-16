@@ -52,7 +52,7 @@ def register():
                 'password_hash': password_hash,
                 'full_name': data['full_name'],
                 'role': 'vendedor'
-            }).select().execute()
+            }).execute()
             
             user_id = user_result.data[0]['id']
             
@@ -172,7 +172,7 @@ def add_product():
             'image_url': image_url
         }
         
-        result = supabase_client.table('products').insert(product_data).select().execute()
+        result = supabase_client.table('products').insert(product_data).execute()
         print("✅ Producto guardado!")
         
         return jsonify({
@@ -273,4 +273,4 @@ def whatsapp_order(store_id):
     return redirect(whatsapp_url)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5002)
+    app.run(debug=True, host='0.0.0.0', port=5003)
